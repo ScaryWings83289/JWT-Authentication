@@ -1,0 +1,34 @@
+const User = require('../models/User')
+const bcrypt = require('bcryptjs');
+const auth = require('../helpers/jwt.js')
+
+
+const login = async ({ username, password }) => {
+  const user = await User.findOne({ username });
+
+  // synchronously compare user entered password with hashed password
+  if (bcrypt.compareSync(password, user.password)) {
+    const token = auth.generateAccessToken(username);
+
+    // call toJSON method applied during model instantiation
+    return { ...user.toJSON(), token }
+  }
+}
+
+const register = async (params) => {
+  // instantiate a user modal and save to mongoDB
+  const user = new User(params)
+  await user.save();
+}
+
+const getById = async (id) => {
+  const user = await User.findById(id);
+  // call toJSON method applied during model instantiation
+  return user.toJSON()
+}
+
+module.exports = {
+  login,
+  register,
+  getById
+};
