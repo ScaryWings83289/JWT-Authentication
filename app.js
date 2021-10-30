@@ -3,12 +3,24 @@ const app = express();
 const mongoose = require('mongoose');
 const auth = require('./helpers/jwt.js');
 const unless = require('express-unless');
-const cors = require('cors')
 const users = require('./controllers/User.js');
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
+
+// CORS options
+app.use((req, res, next) => {
+  //allow access from every, elminate CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.removeHeader('x-powered-by');
+  //set the allowed HTTP methods to be requested
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  //headers clients can use in their requests
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 // middleware for authenticating token submitted with requests
 auth.authenticateToken.unless = unless;
@@ -17,11 +29,6 @@ app.use(auth.authenticateToken.unless({
     { url: '/users/login', methods: ['POST'] },
     { url: '/users/register', methods: ['POST'] }
   ]
-}));
-
-app.use(cors({
-  'origin': '*',
-  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
 }));
 app.use(express.json()); // middleware for parsing application/json
 app.use('/users', users); // middleware for listening to routes
