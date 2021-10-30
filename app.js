@@ -23,9 +23,9 @@ if (process.env.NODE_ENV !== "production") {
 //  next();
 //});
 const corsOptions = {
-  origin: 'https://simple-registration-form.netlify.app/',
+  origin: '*',
   optionsSuccessStatus: 200, // For legacy browser support
-  methods: "GET, PUT, POST, DELETE"
+  methods: 'GET, PUT, POST, DELETE'
 }
 
 app.use(cors(corsOptions));
