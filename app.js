@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const auth = require('./helpers/jwt.js');
 const unless = require('express-unless');
+const cors = require('cors')
 const users = require('./controllers/User.js');
 
 if (process.env.NODE_ENV !== "production") {
@@ -18,6 +19,10 @@ app.use(auth.authenticateToken.unless({
   ]
 }));
 
+app.use(cors({
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+}));
 app.use(express.json()); // middleware for parsing application/json
 app.use('/users', users); // middleware for listening to routes
 
